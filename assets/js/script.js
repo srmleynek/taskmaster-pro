@@ -44,13 +44,8 @@ var saveTasks = function() {
 };
 
 $(".list-group").on("click", "p", function() {
-  var text = $(this)
-    .text()
-    .trim();
-
-  var textInput = $("<textarea>")
-    .addClass("form-control")
-    .val(text);
+  var text = $(this).text().trim();
+  var textInput = $("<textarea>").addClass("form-control").val(text);
 
   $(this).replaceWith(textInput);
 
@@ -59,25 +54,16 @@ $(".list-group").on("click", "p", function() {
 
 $(".list-group").on("blur", "textarea", function() {
   // get the textarea's current value/text
-  var text = $(this)
-  .val()
-  .trim();
-
+  var text = $(this).val().trim();
   // get the parent ul's id attribute
-  var status = $(this)
-  .closest(".list-group")
-  .attr("id")
-  .replace("list-", "");
-
+  var status = $(this).closest(".list-group").attr("id").replace("list-", "");
   // get the task's position in the list of other li elements
-  var index = $(this)
-  .closest(".list-group-item")
-  .index();
+  var index = $(this).closest(".list-group-item").index();
+
+  // do I need an array here like in the date change function?
 
   // recreate p element
-  var taskP = $("<p>")
-  .addClass("m-1")
-  .text(text);
+  var taskP = $("<p>").addClass("m-1").text(text);
 
   // replace textarea with p element
   $(this).replaceWith(taskP);
@@ -85,15 +71,9 @@ $(".list-group").on("blur", "textarea", function() {
 
 $(".list-group").on("click", "span", function() {
   // get current text
-  var date = $(this)
-    .text()
-    .trim();
-
+  var date = $(this).text().trim();
   // create new input text
-  var dateInput = $("<input>")
-  .attr("type", "text")
-  .addClass("form-control")
-  .val(date);
+  var dateInput = $("<input>").attr("type", "text").addClass("form-control").val(date);
 
   $(this).replaceWith(dateInput);
 
@@ -112,6 +92,7 @@ $(".list-group").on("click", "span", function() {
 
 $(".list-group").on("change", "input[type='text']", function() {
   // get current text
+  // does this need trim??
   var date = $(this).val();
   // get the parent ul's id attribute
   var status = $(this).closest(".list-group").attr("id").replace("list-", "");
@@ -147,26 +128,17 @@ $(".card .list-group").sortable({
   },
   over: function() {
     $(this).addClass("dropover-active");
-    $(".bottom-trash").addClass("bottom-trash-drag");
   },
   out: function() {
     $(this).removeClass("dropover-active");
-    $(".bottom-trash").removeClass("bottom-trash-drag");
   },
   update: function(event) {
     // arrat to store the task data in
     var tempArr =[];
     // loop over current set of children in sortable list
     $(this).children().each(function() {
-      var text = $(this)
-        .find("p")
-        .text()
-        .trim();
-
-      var date = $(this)
-        .find("span")
-        .text()
-        .trim();
+      var text = $(this).find("p").text().trim();
+      var date = $(this).find("span").text().trim();
 
       // add task data to the temp array as an object
       tempArr.push({
@@ -174,12 +146,9 @@ $(".card .list-group").sortable({
         date: date
       });
     });
-    console.log(tempArr);
 
     // trim down list's ID to match object property
-    var arrName = $(this)
-    .attr("id")
-    .replace("list-", "");
+    var arrName = $(this).attr("id").replace("list-", "");
 
     // update array on tasks object and save
     tasks[arrName] = tempArr;
@@ -193,11 +162,11 @@ $("#trash").droppable({
   drop: function(event, ui) {
     ui.draggable.remove();
   },
-  over: function(event, ui) {
-    console.log("over");
+  over: function() {
+    $(".bottom-trash").addClass("bottom-trash-drag");
   },
-  out: function(event, ui) {
-    console.log("out");
+  out: function() {
+    $(".bottom-trash").removeClass("bottom-trash-drag");
   }
 });
 
@@ -222,7 +191,6 @@ var auditTask = function(taskEl) {
   else if (Math.abs(moment().diff(time, "days")) <= 2) {
     $(taskEl).addClass("list-group-item-warning");
   }
-  console.log(taskEl);
 };
 
 setInterval(function() {
@@ -244,7 +212,7 @@ $("#task-form-modal").on("shown.bs.modal", function() {
 });
 
 // save button in modal was clicked
-$("#task-form-modal .btn-primary").click(function() {
+$("#task-form-modal .btn-save").click(function() {
   // get form values
   var taskText = $("#modalTaskDescription").val();
   var taskDate = $("#modalDueDate").val();
