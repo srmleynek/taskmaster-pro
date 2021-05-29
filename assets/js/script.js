@@ -137,17 +137,21 @@ $(".card .list-group").sortable({
   scroll: false,
   tolerance: "pointer",
   helper: "clone",
-  activate: function(event) {
-    console.log("activate", this);
+  activate: function() {
+    $(this).addClass("dropover");
+    $(".bottom-trash").addClass("bottom-trash-drag");
   },
-  deactivate: function(event) {
-    console.log("deactivate", this);
+  deactivate: function() {
+    $(this).removeClass("dropover");
+    $(".bottom-trash").removeClass("bottom-trash-drag");
   },
-  over: function(event) {
-    console.log("over", event.target);
+  over: function() {
+    $(this).addClass("dropover-active");
+    $(".bottom-trash").addClass("bottom-trash-drag");
   },
-  out: function(event) {
-    console.log("out", event.target);
+  out: function() {
+    $(this).removeClass("dropover-active");
+    $(".bottom-trash").removeClass("bottom-trash-drag");
   },
   update: function(event) {
     // arrat to store the task data in
@@ -218,9 +222,14 @@ var auditTask = function(taskEl) {
   else if (Math.abs(moment().diff(time, "days")) <= 2) {
     $(taskEl).addClass("list-group-item-warning");
   }
+  console.log(taskEl);
 };
 
-// set interval
+setInterval(function() {
+  $(".card .list-group-item").each(function(index, el) {
+    auditTask(el);
+  });
+}, 1000 * 60 * 30);
   
 // modal was triggered
 $("#task-form-modal").on("show.bs.modal", function() {
